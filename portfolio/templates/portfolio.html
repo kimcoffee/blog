@@ -1,0 +1,379 @@
+{% extends 'navbar.html' %}
+{% load staticfiles %}
+<!-- template에 static파일을 불러오겠다-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+
+  
+
+
+  {% block content %}
+  <div class="container">
+    <div class="row">
+      <!--    Loop starts here     -->
+      {% for portfolio in portfolios.all %}
+      <div class="portfolio-item">
+        <div class="portfolio-item__wrapper" data-demo="https://jenishshrestha.github.io/" data-title="Jenish Shrestha">
+          <div class="portfolio-item__demo">
+            <img src="{{ portfolio.image.url }}">
+            <!-- <span class="quick-view">
+              <span class="quick-demo">Preview</span>
+            </span> -->
+          </div>
+          <div class="portfolio-item__title">
+            <h2>{{ portfolio.title }}</h2>
+          </div>
+          <div>
+           <center> <p>{{ portfolio.description }}</p></center>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+
+    </div>
+  </div>
+
+  <!-- <div class="under-construction">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"></path></svg>
+                <p> Https website links are required for this to work.</p>
+              </div> -->
+
+
+  <div id="iframe-content" style="display: none;">
+    <div class="iframe-title">
+      <div class="demo-title"></div>
+      <div class="devices-wrapper">
+        <div class="devices">
+          <button type="button" class="preview-desktop" data-device-mode="desktop"><svg
+              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <rect x="0" fill="none" width="20" height="20" />
+              <g>
+                <path
+                  d="M3 2h14c.55 0 1 .45 1 1v10c0 .55-.45 1-1 1h-5v2h2c.55 0 1 .45 1 1v1H5v-1c0-.55.45-1 1-1h2v-2H3c-.55 0-1-.45-1-1V3c0-.55.45-1 1-1zm13 9V4H4v7h12zM5 5h9L5 9V5z" />
+              </g>
+            </svg></button>
+          <button type="button" class="preview-tablet" data-device-mode="tablet">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <rect x="0" fill="none" width="20" height="20" />
+              <g>
+                <path
+                  d="M4 2h12c.55 0 1 .45 1 1v14c0 .55-.45 1-1 1H4c-.55 0-1-.45-1-1V3c0-.55.45-1 1-1zm11 14V4H5v12h10zM6 5h6l-6 5V5z" />
+              </g>
+            </svg>
+          </button>
+          <button type="button" class="preview-mobile" data-device-mode="mobile">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <rect x="0" fill="none" width="20" height="20" />
+              <g>
+                <path
+                  d="M6 2h8c.55 0 1 .45 1 1v14c0 .55-.45 1-1 1H6c-.55 0-1-.45-1-1V3c0-.55.45-1 1-1zm7 12V4H7v10h6zM8 5h4l-4 5V5z" />
+              </g>
+            </svg>
+          </button>
+          <button type="button" class="preview-close">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <rect x="0" fill="none" width="20" height="20" />
+              <g>
+                <path
+                  d="M12.12 10l3.53 3.53-2.12 2.12L10 12.12l-3.54 3.54-2.12-2.12L7.88 10 4.34 6.46l2.12-2.12L10 7.88l3.54-3.53 2.12 2.12z" />
+              </g>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="site-loading">
+      <h3>Preview Loading...</h3>
+    </div>
+  </div>
+
+  <script>
+    $(function () {
+
+      // to load preview on click
+      var selector = $('.portfolio-item__wrapper');
+      if (selector.length > 0) {
+        selector.click(function () {
+          var titleDiv = $('#iframe-content .demo-title');
+          var demo_url = $(this).data('demo');
+          var demo_title = $(this).data('title');
+          titleDiv.text(demo_title);
+          var html = '';
+          html += '<div class="iframe-wrapper"><iframe id="demo-iframe" src="' + demo_url + '">This feature requires inline frames. You have iframes disabled or your browser does not support them.</iframe></div>';
+          $('.devices button[data-device-mode="desktop"]').addClass('active');
+          $('#iframe-content').append(html).show();
+        });
+      }
+
+      // to close preview 
+      var closePreview = $('.preview-close');
+      if (closePreview.length > 0) {
+        closePreview.click(function () {
+          $('#iframe-content').hide().find('.iframe-wrapper').remove();
+          $('.devices button').removeClass('active');
+          $('#iframe-content').attr('class', '');
+        });
+      }
+
+      //For responsiveness tab
+      var responsiveTabs = $('.devices button[data-device-mode]');
+      if (closePreview.length > 0) {
+        responsiveTabs.click(function () {
+          responsiveTabs.removeClass('active');
+          $(this).addClass('active');
+          var deviceMode = $(this).data('device-mode');
+          var targetIframe = $('#iframe-content');
+          targetIframe.attr('class', deviceMode);
+        });
+      }
+    });
+  </script>
+
+  <style>
+    @import url("https://fonts.googleapis.com/css?family=Raleway&display=swap");
+
+    *,
+    *:before,
+    *:after {
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Raleway", sans-serif;
+    }
+
+    .container {
+      width: 1240px;
+      padding: 0 20px;
+      margin: 50px auto 0;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 -20px;
+    }
+
+    .portfolio-item {
+      padding: 20px;
+      flex-basis: 33.3333%;
+      max-width: 33.3333%;
+    }
+
+    .portfolio-item__demo {
+      padding-top: 100%;
+      position: relative;
+    }
+
+    .portfolio-item__demo img {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      object-fit: cover;
+      object-position: 0% 0%;
+      transition: all 3s ease-in-out;
+    }
+
+    .portfolio-item__demo:hover img {
+      object-position: 0% 100%;
+    }
+
+    .portfolio-item__demo .quick-view {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.72);
+      opacity: 0;
+      visibility: hidden;
+      transition: all ease 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .portfolio-item__demo:hover .quick-view {
+      opacity: 1;
+      visibility: visible;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .portfolio-item__demo .quick-demo {
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 8px 16px;
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+    }
+
+    .portfolio-item__wrapper {
+      box-shadow: 0 0 13px 0 rgba(0, 0, 0, 0.11);
+      cursor: pointer;
+      transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .portfolio-item__wrapper:hover {
+      box-shadow: 0px 22px 30px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    .portfolio-item__title h2 {
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      padding: 10px 0;
+      margin: 0;
+    }
+
+    #iframe-content {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #iframe-content .iframe-title {
+      position: relative;
+      z-index: 1;
+      order: 1;
+      height: 46px;
+      background-color: #eee;
+      border-top: 1px solid #ddd;
+      color: #191e23;
+      line-height: 46px;
+      font-size: 16px;
+      display: flex;
+      padding: 0 30px;
+    }
+
+    #iframe-content .iframe-title .demo-title {
+      flex-grow: 1;
+    }
+
+    #iframe-content .iframe-wrapper {
+      flex-grow: 1;
+      position: relative;
+      z-index: 1;
+      overflow: auto;
+    }
+
+    #iframe-content .site-loading {
+      position: absolute;
+      background-color: #fff;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    #iframe-content iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    #iframe-content.tablet .site-loading,
+    #iframe-content.mobile .site-loading {
+      background-color: #333;
+    }
+
+    #iframe-content.tablet iframe,
+    #iframe-content.mobile iframe {
+      border-radius: 30px;
+      background-color: #111;
+      margin: 30px auto 80px;
+    }
+
+    #iframe-content.tablet iframe {
+      width: 768px;
+      height: 1025px;
+      padding: 40px 10px 70px;
+    }
+
+    #iframe-content.mobile iframe {
+      width: 360px;
+      height: 640px;
+      padding: 40px 10px 70px;
+    }
+
+    .devices button {
+      cursor: pointer;
+      background: 0 0;
+      border: none;
+      height: 45px;
+      padding: 4px 11px;
+      margin: 0 0 0 -4px;
+      box-shadow: none;
+      border-top: 1px solid transparent;
+      border-bottom: 4px solid transparent;
+      transition: 0.15s background-color ease-in-out, 0.15s border-color ease-in-out;
+      outline: none;
+    }
+
+    .devices button svg {
+      height: 1em;
+      font-size: 18px;
+      transition: 0.15s fill ease-in-out;
+    }
+
+    .devices button:hover {
+      background-color: #fff;
+    }
+
+    .devices button:hover svg {
+      fill: #0073aa;
+    }
+
+    .devices button.active {
+      border-bottom-color: #191e23;
+    }
+
+    .devices button.active:hover {
+      border-bottom-color: #0073aa;
+    }
+
+    .under-construction {
+      text-align: center;
+      margin: 40px 0;
+    }
+
+    .under-construction svg {
+      height: 1em;
+      font-size: 18px;
+      color: red;
+    }
+
+    @media (max-width: 991px) {
+      .devices button[data-device-mode] {
+        display: none;
+      }
+    }
+  </style>
+
+  {% endblock %}
+</body>
+
+</html>
